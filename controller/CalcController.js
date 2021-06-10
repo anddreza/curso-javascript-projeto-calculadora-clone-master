@@ -6,7 +6,8 @@ class CalcController{
     /* o metodo constructor é aquele chamado automaticamente quando existe a instância de uma classe */
     constructor(){ //chamar tudo aqui no constructor 
         //basta colocar this e o nome do metodo
-        
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._lastOperator = '';
         this._lastNumber = '';
 
@@ -35,6 +36,20 @@ class CalcController{
 
             document.execCommand("Copy");
 
+            input.remove();
+
+    }
+
+    pasteFromClipboard(){
+
+        document.addEventListener('paste', e => {
+
+            let text = e.clipboardData.getData('Text');
+
+            this.displayCalc = parseFloat(text);
+            
+            console.log(text);
+        })
     }
 
     initialize(){ //método inicial
@@ -56,9 +71,43 @@ class CalcController{
         } 10000);
         */
        this.setLastNumberToDisplay();
+
+       this.pasteFromClipboard();
+       
+       document.querySelectorAll('btn-ac').forEach(btn=>{
+
+        btn.addEventListener('dbclick', e =>{
+
+            this.toggleAudio();
+
+        });
+       });
     }
+
+    toggleAudio(){ //expressao util para interruptor
+      this._audioOnOff = !this._audioOnOff; 
+        // this._audioOnOff = (this._audioOnOff) ? false : true; 
+        //  if (this._audioOnOff) {
+        //     this._audioOnOff = false;
+        // } else {
+        //     this._audioOnOff = true;
+        // }
+    }
+
+    playAudio(){
+        if (this._audioOnOff){
+            this._audio.currentTime = 0;
+            this._audio.play();
+
+    }
+}
+
+
     initKeyboard(){
         document.addEventListener('keyup', e => {
+
+            this.playAudio();
+            
             // console.log(e.key);
             switch(e.key){
                 case 'Escape':
@@ -303,6 +352,9 @@ class CalcController{
     }
 
     execBtn(value){
+
+        this.playAudio();
+
         switch(value){
             case 'ac':
                 this.clearAll();
