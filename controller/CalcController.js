@@ -204,7 +204,15 @@ class CalcController{
     }
 
     getResult(){
-        return eval(this._operation.join(""))
+
+        try{
+        return eval(this._operation.join(""));
+        } catch(e){
+            setTimeout(()=>{
+                this.setError();
+            }1);
+            
+        }
     }
 
     calc(){
@@ -466,6 +474,12 @@ class CalcController{
     }
 /* mudar o valor do atributo displayCalc */
     set displayCalc(value){
+
+        if(value.toString().length > 10 ){
+            this.setError();
+            return false;
+        }
+
         this._displayCalcEl.innerHTML = value;
     }
 
